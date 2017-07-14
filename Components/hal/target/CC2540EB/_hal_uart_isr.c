@@ -3,7 +3,7 @@
  @file  _hal_uart_isr.c
 
  @brief This file contains the interface to the H/W UART driver by ISR.
-        															请注意这里的问题 !
+        请注意这里的问题 !
         实测 : 当ble扫描和串口中断都使用的时候，串口数据接收有问题
         Note that when using this interrupt service based UART configuration
         (as opposed to DMA) the higher baudrates, such as 115200bps, may suffer
