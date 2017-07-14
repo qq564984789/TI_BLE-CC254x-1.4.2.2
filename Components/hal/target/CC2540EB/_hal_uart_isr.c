@@ -234,7 +234,14 @@ typedef uint8 txIdx_t;
 #else
 typedef uint16 txIdx_t;
 #endif
-
+//串口数据接收 /发送缓冲区的的数据结构
+//串口的读写函数不是真正的发送接改函数,
+//他们只是负责将数填入下面的缓冲区,或者从缓冲区中读出
+//head和tail都是一个方向移动,当移到末位就回到开头位置.
+//rxBuf和txBuf是一个循环数组，里面内容由Head、 Tail两个游标指示
+//当游标指示到数组尾时，游标变为0，再从头部开始
+// 读写函数只是将数填入或读出缓冲区,然后移动其中一个指针..
+//那么什么时候结束呢? 就是head==tail..
 typedef struct
 {
   uint8 rxBuf[HAL_UART_ISR_RX_MAX];
