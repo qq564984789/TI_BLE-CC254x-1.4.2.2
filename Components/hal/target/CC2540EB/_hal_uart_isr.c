@@ -291,17 +291,17 @@ static void HalUARTInitISR(void)
 {
   // Set P2 priority - USART0 over USART1 if both are defined.
   P2DIR &= ~P2DIR_PRIPO;
-  P2DIR |= HAL_UART_PRIPO;
-
+  P2DIR |= HAL_UART_PRIPO;                 //¿ÉÄÜÓÐºÃ¼¸¸öÍâÉèÓ³Éäµ½GPIOÒý½ÅÏàÍ¬µÄµØ·½£¬
+								     //ÕâÊ±ºò£¬µ½µ×ÒÔÄÄÒ»¸öÍâÉèÆð×÷ÓÃÄØå ÉèÖÃPRIPO
 #if (HAL_UART_ISR == 1)
-  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O location to P0.
+  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O location to P0.  ¼ûL188
 #else
-  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O location to P1.
+  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O location to P1.   ¼û L189
 #endif
-  PxSEL  |= HAL_UART_Px_RX_TX;       // Enable Tx and Rx on P1.
+  PxSEL  |= HAL_UART_Px_RX_TX;       // Enable Tx and Rx on P1.       ½«GPIOÒý½Å×÷ÎªÍâÉèÒý½Å
   ADCCFG &= ~HAL_UART_Px_RX_TX;      // Make sure ADC doesnt use this.
-  UxCSR = CSR_MODE;                  // Mode is UART Mode.
-  UxUCR = UCR_FLUSH;                 // Flush it.
+  UxCSR = CSR_MODE;                  // Mode is UART Mode.     ½«USART ÉèÖÃÎªUART Ä£Ê½
+  UxUCR = UCR_FLUSH;                 // Flush it.    ³õÊ¼µÄÊ±ºò£¬Ë¢ÐÂÀïÃæµÄÊý¾Ý(±ä0)
 }
 
 /******************************************************************************
