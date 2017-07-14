@@ -68,7 +68,10 @@
 
 //#define HAL_UART_ASSERT(expr)        HAL_ASSERT((expr))
 #define HAL_UART_ASSERT(expr)
-
+//查看串口接收区当前可以AVAILable 的字节数
+//也就是看接收缓冲区里面有多少内容
+//算法: 尾- 首。  如果尾跑到首前面来了，则实际的尾=
+//HAL_UART_ISR_RX_MAX  + 当前尾标号
 #define HAL_UART_ISR_RX_AVAIL() \
   ((isrCfg.rxTail >= isrCfg.rxHead) ? \
   (isrCfg.rxTail - isrCfg.rxHead) : \
@@ -83,7 +86,7 @@
  * CONSTANTS
  */
 
-// UxCSR - USART Control and Status Register.
+// UxCSR - USART Control and Status Register.   这是USART的控制寄存器
 #define CSR_MODE                   0x80
 #define CSR_RE                     0x40
 #define CSR_SLAVE                  0x20
@@ -93,7 +96,7 @@
 #define CSR_TX_BYTE                0x02
 #define CSR_ACTIVE                 0x01
 
-// UxUCR - USART UART Control Register.
+// UxUCR - USART UART Control Register.  注意:这仅是 UART 的控制寄存器
 #define UCR_FLUSH                  0x80
 #define UCR_FLOW                   0x40
 #define UCR_D9                     0x20
@@ -102,14 +105,15 @@
 #define UCR_SPB                    0x04
 #define UCR_STOP                   0x02
 #define UCR_START                  0x01
-
-#define UTX0IE                     0x04
-#define UTX1IE                     0x08
-
+                                                  
+#define UTX0IE                     0x04        //串口0 的发送中断 使能位
+#define UTX1IE                     0x08       //串口1 的发送中断 使能位
+								    //注意:CC2540的串口发送、接收中断
+								    //是独立开来的，见user guide   P44/47
 #define P2DIR_PRIPO                0xC0
 
 // Incompatible redefinitions result with more than one UART driver sub-module.
-#undef PxOUT
+#undef PxOUT                                   //#undef   :去掉原有的宏定义
 #undef PxDIR
 #undef PxSEL
 #undef UxCSR
@@ -132,7 +136,7 @@
 #undef PICTL_BIT
 #undef IENx
 #undef IEN_BIT
-#if (HAL_UART_ISR == 1)
+#if (HAL_UART_ISR == 1)          //选择使用P0还是P1口作为串口使用
 #define PxOUT                      P0
 #define PxIN                       P0
 #define PxDIR                      P0DIR
@@ -177,7 +181,15 @@
 #define IEN_BIT                    0x10
 #endif
 
-#if (HAL_UART_ISR == 1)
+//将某一GPIO口做外设使用时，两步走:
+// 1、CC2430的片上外设均可映射到GPIO的两个位置处，我们要选择其中一个。
+//PERCFG:对于一个外设(USART 、Timer)，将它映射到第1位置还是
+//            第二位置    见user guide   P88
+// USART0 由于选用 Alt-1，因此要清零(位与0->位与非1:可以不改变其他位)
+// USART1选用 Alt-2，因此要置位(位或1)
+// 2、将被外设选中的GPIO口变成外设功能，使外设功能生效   P84  表7-1
+// 下面的HAL_UART_Px_RX_TX都是对 P0SEL,P1SEL设置，见P88       
+#if (HAL_UART_ISR == 1)  
 #define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
 #define HAL_UART_Px_RX_TX          0x0C         // Peripheral I/O Select for Rx/Tx.
 #define HAL_UART_Px_RX             0x04         // Peripheral I/O Select for Rx.
