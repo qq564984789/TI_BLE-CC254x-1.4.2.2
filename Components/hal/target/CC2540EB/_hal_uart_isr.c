@@ -364,9 +364,11 @@ static void HalUARTOpenISR(halUARTCfg_t *config)
     UxUCR = UCR_STOP;
   }
 
-  URXxIE = 1;
-  UTXxIF = 1;  // Prime the ISR pump.
-  UxCSR = (CSR_MODE | CSR_RE);
+  URXxIE = 1;                                   //打开串口的接收 中断 使能
+  UTXxIF = 1;  // Prime the ISR pump.    // 设置串口的发送中断，一旦串口发送中断使能打开，
+                                                      //就可完成一次串口数据发送
+  UxCSR = (CSR_MODE | CSR_RE);      //USART设置为UART模式，且允许接收。注意:
+                                                     //只有在串口配置好后，才允许接收数据P168
 }
 
 /*****************************************************************************
