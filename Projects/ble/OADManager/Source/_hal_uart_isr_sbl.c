@@ -422,7 +422,7 @@ static uint16 HalUARTWriteISR(uint8 *buf, uint16 len)
 }
 
 /******************************************************************************
- * @fn      HalUARTPollISR
+ * @fn      HalUARTPollISR                     轮询查看rxBuf中是否有数据接收到
  *
  * @brief   Poll a USART module implemented by ISR.
  *
@@ -595,7 +595,7 @@ HAL_ISR_FUNCTION( halUart1RxIsr, URX1_VECTOR )
   isrCfg.rxBuf[isrCfg.rxTail] = tmp;
 
   // Re-sync the shadow on any 1st byte received.
-  if (isrCfg.rxHead == isrCfg.rxTail)
+  if (isrCfg.rxHead == isrCfg.rxTail)     
   {
     isrCfg.rxShdw = ST0;
   }

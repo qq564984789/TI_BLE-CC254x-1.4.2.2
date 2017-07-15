@@ -182,7 +182,7 @@
 #endif
 
 //将某一GPIO口做外设使用时，两步走:
-// 1、CC2430的片上外设均可映射到GPIO的两个位置处，我们要选择其中一个。
+// 1、CC2430的片上外设均可映射到GPIO的两组备用位置处，我们要选择其中一个。
 //PERCFG:对于一个外设(USART 、Timer)，将它映射到第1位置还是
 //            第二位置    见user guide   P88
 // USART0 由于选用 Alt-1，因此要清零(位与0->位与非1:可以不改变其他位)
@@ -247,13 +247,13 @@ typedef struct
   uint8 rxBuf[HAL_UART_ISR_RX_MAX];
   rxIdx_t rxHead;
   volatile rxIdx_t rxTail;
-  uint8 rxTick;
-  uint8 rxShdw;
+  uint8 rxTick;        //串口接收数据超时标志
+  uint8 rxShdw;      //串口接收数据超时标志
 
   uint8 txBuf[HAL_UART_ISR_TX_MAX];
   volatile txIdx_t txHead;
   txIdx_t txTail;
-  uint8 txMT;
+  uint8 txMT;   //串口数据发送完成标志
 
   halUARTCBack_t uartCB;
 } uartISRCfg_t;
@@ -387,7 +387,7 @@ static uint16 HalUARTReadISR(uint8 *buf, uint16 len)
 
   while ((isrCfg.rxHead != isrCfg.rxTail) && (cnt < len))
   {
-    *buf++ = isrCfg.rxBuf[isrCfg.rxHead++];
+    *buf++ = isrCfg.rxBuf[isrCfg.rxHead++];       //读数据从缓冲区的头部游标开始
     if (isrCfg.rxHead >= HAL_UART_ISR_RX_MAX)
     {
       isrCfg.rxHead = 0;
@@ -413,17 +413,17 @@ static uint16 HalUARTWriteISR(uint8 *buf, uint16 len)
   uint16 cnt;
 
   // Enforce all or none.
-  if (HAL_UART_ISR_TX_AVAIL() < len)
+  if (HAL_UART_ISR_TX_AVAIL() < len)    //如果发送缓冲区剩余可写的空间小于len
   {
     return 0;
   }
 
-  for (cnt = 0; cnt < len; cnt++)
+  for (cnt = 0; cnt < len; cnt++)       //写数据从缓冲区的尾部游标开始
   {
     isrCfg.txBuf[isrCfg.txTail] = *buf++;
     isrCfg.txMT = 0;
 
-    if (isrCfg.txTail >= HAL_UART_ISR_TX_MAX-1)
+    if (isrCfg.txTail >= HAL_UART_ISR_TX_MAX-1)  
     {
       isrCfg.txTail = 0;
     }
@@ -433,7 +433,9 @@ static uint16 HalUARTWriteISR(uint8 *buf, uint16 len)
     }
 
     // Keep re-enabling ISR as it might be keeping up with this loop due to other ints.
-    IEN2 |= UTXxIE;
+    IEN2 |= UTXxIE;              //注意，这里是在for循环中不断
+	//打开串口发送中断的使能,由于前面已经打开了发送中断
+	//因此，在这里会触发一次发送中断，跳至HAL_ISR_FUNCTION( halUart0TxIsr, UTX0_VECTOR )
   }
 
   return cnt;
@@ -639,17 +641,19 @@ HAL_ISR_FUNCTION( halUart0TxIsr, UTX0_VECTOR )
 HAL_ISR_FUNCTION( halUart1TxIsr, UTX1_VECTOR )
 #endif
 {
-  HAL_ENTER_ISR();
+  HAL_ENTER_ISR();      //打开总中断
 
-  if (isrCfg.txHead == isrCfg.txTail)
+  if (isrCfg.txHead == isrCfg.txTail)  //
   {
-    IEN2 &= ~UTXxIE;
-    isrCfg.txMT = 1;
+    IEN2 &= ~UTXxIE;         //关闭串口发送中断的使能，因为后面不再发送
+    isrCfg.txMT = 1;           //发送完成标志位
   }
   else
   {
-    UTXxIF = 0;
-    UxDBUF = isrCfg.txBuf[isrCfg.txHead++];
+    UTXxIF = 0;              //进入发送中断后，要关闭发送中断
+    UxDBUF = isrCfg.txBuf[isrCfg.txHead++];       //将缓冲区的带发送内容放至UxDBUF
+                                                                     //注意，当UxDBUF内容没有之后
+                                                                     //又会引起一次发送中断
 
     if (isrCfg.txHead >= HAL_UART_ISR_TX_MAX)
     {
