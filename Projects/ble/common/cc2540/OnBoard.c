@@ -191,8 +191,8 @@ void _itoa(uint16 num, uint8 *buf, uint8 radix)
  *********************************************************************/
 
 /*********************************************************************
- * Keyboard Register function
- *
+ * Keyboard Register function           如果要让某个任务可以检测到按键事件(按键事件由系统通知给任务)，
+ *                                                则必须使用该函数将任务id注册进系统
  * The keyboard handler is setup to send all keyboard changes to
  * one task (if a task is registered).
  *

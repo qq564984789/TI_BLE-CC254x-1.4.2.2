@@ -139,7 +139,7 @@
 
 #else
 
-/* SW_6 is at P0.1 */
+/* SW_6 is at P0.1 */                       //P0.1口和s1 按键相连
 #define HAL_KEY_SW_6_PORT   P0
 #define HAL_KEY_SW_6_BIT    BV(1)
 #define HAL_KEY_SW_6_SEL    P0SEL

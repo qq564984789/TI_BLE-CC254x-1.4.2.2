@@ -1574,7 +1574,7 @@ void osal_run_system( void )
   osalTimeUpdate();
 #endif
 
-  Hal_ProcessPoll();       //查询数据 :比如串口数据,usb数据
+  Hal_ProcessPoll();       //查询 UART  、SPI   、  HID  的数据
 #endif /* USE_ICALL */
 
 #ifdef USE_ICALL
@@ -1652,30 +1652,32 @@ void osal_run_system( void )
   }
 #endif /* USE_ICALL */
 
-  do {                           //不断循环查找是否有事件发生，若有事件，立刻退出do。。。while循环。app应用优先级最低
+  do {                           //不断循环查找某任务是否有事件发生，若有事件，立刻退出do。。。while循环。app应用优先级最低
     if (tasksEvents[idx])  // Task is highest priority that is ready.
     {
       break;
     }
-  } while (++idx < tasksCnt);
+  } while (++idx < tasksCnt);       //tasksEvents[6]通常已经是用户自己定义的任务事件
 
   if (idx < tasksCnt)     //如果找到了事件
   {
-    uint16 events;      //每个任务最多含有16个事件
+    uint16 events;      //每个任务最多含有16个事件，所以events是一个16位类型
     halIntState_t intState;
 
-    HAL_ENTER_CRITICAL_SECTION(intState);  //关中断
+    HAL_ENTER_CRITICAL_SECTION(intState);  //保存先前中断状态，然后关中断
     events = tasksEvents[idx];        //读取该任务所含有的事件(事件可能不止1个)
     tasksEvents[idx] = 0;  // Clear the Events for this task.   清除事件记录，在执行任务处理函数期间有可能会有事件再次发生
-    HAL_EXIT_CRITICAL_SECTION(intState);   //开中断
+    HAL_EXIT_CRITICAL_SECTION(intState);   //开中断，恢复先前中断状态
 
     activeTaskID = idx;
-    events = (tasksArr[idx])( idx, events );   //tasksArr是任务的处理函数指针
+    events = (tasksArr[idx])( idx, events );   //tasksArr是任务的处理函数指针，调用相应的任务事件处理函数
+                                                             //返回的是这个任务未被处理的事件
     activeTaskID = TASK_NO_TASK;
 
     HAL_ENTER_CRITICAL_SECTION(intState);
     tasksEvents[idx] |= events;  // Add back unprocessed events to the current task. tasksEvents是个指针，指向内容 : 每个任务所包含的各种事件
-    HAL_EXIT_CRITICAL_SECTION(intState);
+	//把刚才返回未处理的事件添加到当前任务中继续处理
+	HAL_EXIT_CRITICAL_SECTION(intState);
   }
 #if defined( POWER_SAVING ) && !defined(USE_ICALL)
   else  // Complete pass through all task events with no activity?
