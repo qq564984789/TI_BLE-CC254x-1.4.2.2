@@ -77,7 +77,7 @@
 /*********************************************************************
  * GLOBAL VARIABLES
  */
-
+//tasksArr 是存放任务处理函数地址的数组
 // The order in this table must be identical to the task initialization calls below in osalInitTask.
 const pTaskEventHandlerFn tasksArr[] =
 {
@@ -93,7 +93,9 @@ const pTaskEventHandlerFn tasksArr[] =
 };
 
 const uint8 tasksCnt = sizeof( tasksArr ) / sizeof( tasksArr[0] );
-uint16 *tasksEvents;
+uint16 *tasksEvents;  
+//tasksEvents 是个指针，在函数 osalInitTasks 中开辟了与任务处理函数个数一样多
+//的 uint16 型数据, 换句话说，每个函数自己包含的所有事件( uint16 型数据)都由tasksEvents 指向
 
 /*********************************************************************
  * FUNCTIONS
@@ -111,7 +113,7 @@ uint16 *tasksEvents;
 void osalInitTasks( void )
 {
   uint8 taskID = 0;
-
+ //分配任务事件空间，采用动态方法完成。任何事件都是归属于某个任务  !
   tasksEvents = (uint16 *)osal_mem_alloc( sizeof( uint16 ) * tasksCnt);
   osal_memset( tasksEvents, 0, (sizeof( uint16 ) * tasksCnt));
 

@@ -218,7 +218,7 @@ extern void (*osal_eventloop_hook)(void);
    * Set a Task Event
    */
   extern uint8 osal_set_event( uint8 task_id, uint16 event_flag );
-
+//为某个task设置一个事件
 
   /*
    * Clear a Task Event

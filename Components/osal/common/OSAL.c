@@ -1333,17 +1333,17 @@ uint8 osal_int_disable( uint8 interrupt_id )
 uint8 osal_init_system( void )
 {
 #if !defined USE_ICALL && !defined OSAL_PORT2TIRTOS
-  // Initialize the Memory Allocation System
+  // Initialize the Memory Allocation System        初始化内存分配
   osal_mem_init();
 #endif /* !defined USE_ICALL && !defined OSAL_PORT2TIRTOS */
 
-  // Initialize the message queue
+  // Initialize the message queue                   初始化消息队列
   osal_qHead = NULL;
 
-  // Initialize the timers
+  // Initialize the timers                             初始化定时器
   osalTimerInit();
 
-  // Initialize the Power Management System
+  // Initialize the Power Management System        初始化电源管理
   osal_pwrmgr_init();
 
 #ifdef USE_ICALL
@@ -1352,7 +1352,7 @@ uint8 osal_init_system( void )
 #endif /* USE_ICALL */
 
   // Initialize the system tasks.
-  osalInitTasks();
+  osalInitTasks();                        //初始化系统任务，里面执行了BLE各层的初始化，包含自己app的初始化
 
 #if !defined USE_ICALL && !defined OSAL_PORT2TIRTOS
   // Setup efficient search for the first free block of heap.
@@ -1548,7 +1548,7 @@ ICall_Errno osal_service_entry(ICall_FuncArgsHdr *args)
 #endif /* USE_ICALL */
 
 /*********************************************************************
- * @fn      osal_run_system
+ * @fn      osal_run_system   
  *
  * @brief
  *
@@ -1561,6 +1561,8 @@ ICall_Errno osal_service_entry(ICall_FuncArgsHdr *args)
  *
  * @return  none
  */
+
+//检查相对应的标志位，就指定相对应的任务。
 void osal_run_system( void )
 {
   uint8 idx = 0;
@@ -1572,7 +1574,7 @@ void osal_run_system( void )
   osalTimeUpdate();
 #endif
 
-  Hal_ProcessPoll();
+  Hal_ProcessPoll();       //查询数据 :比如串口数据,usb数据
 #endif /* USE_ICALL */
 
 #ifdef USE_ICALL
@@ -1650,35 +1652,35 @@ void osal_run_system( void )
   }
 #endif /* USE_ICALL */
 
-  do {
+  do {                           //不断循环查找是否有事件发生，若有事件，立刻退出do。。。while循环。app应用优先级最低
     if (tasksEvents[idx])  // Task is highest priority that is ready.
     {
       break;
     }
   } while (++idx < tasksCnt);
 
-  if (idx < tasksCnt)
+  if (idx < tasksCnt)     //如果找到了事件
   {
-    uint16 events;
+    uint16 events;      //每个任务最多含有16个事件
     halIntState_t intState;
 
-    HAL_ENTER_CRITICAL_SECTION(intState);
-    events = tasksEvents[idx];
-    tasksEvents[idx] = 0;  // Clear the Events for this task.
-    HAL_EXIT_CRITICAL_SECTION(intState);
+    HAL_ENTER_CRITICAL_SECTION(intState);  //关中断
+    events = tasksEvents[idx];        //读取该任务所含有的事件(事件可能不止1个)
+    tasksEvents[idx] = 0;  // Clear the Events for this task.   清除事件记录，在执行任务处理函数期间有可能会有事件再次发生
+    HAL_EXIT_CRITICAL_SECTION(intState);   //开中断
 
     activeTaskID = idx;
-    events = (tasksArr[idx])( idx, events );
+    events = (tasksArr[idx])( idx, events );   //tasksArr是任务的处理函数指针
     activeTaskID = TASK_NO_TASK;
 
     HAL_ENTER_CRITICAL_SECTION(intState);
-    tasksEvents[idx] |= events;  // Add back unprocessed events to the current task.
+    tasksEvents[idx] |= events;  // Add back unprocessed events to the current task. tasksEvents是个指针，指向内容 : 每个任务所包含的各种事件
     HAL_EXIT_CRITICAL_SECTION(intState);
   }
 #if defined( POWER_SAVING ) && !defined(USE_ICALL)
   else  // Complete pass through all task events with no activity?
   {
-    osal_pwrmgr_powerconserve();  // Put the processor/system into sleep
+    osal_pwrmgr_powerconserve();  // Put the processor/system into sleep    使系统睡眠，以便更低功耗
   }
 #endif
 

@@ -1,0 +1,31 @@
+---- HAL_UART_PERCFG_BIT Matches (30 in 6 files) ----
+_hal_uart_dma.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#undef  HAL_UART_PERCFG_BIT
+_hal_uart_dma.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
+_hal_uart_dma.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x02         // USART1 on P1, Alt-2; so set this bit.
+_hal_uart_dma.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O to Alt. 1 location on P0.
+_hal_uart_dma.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O to Alt. 2 location on P1.
+_hal_uart_isr.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#undef HAL_UART_PERCFG_BIT
+_hal_uart_isr.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
+_hal_uart_isr.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x02         // USART1 on P1, Alt-2; so set this bit.
+_hal_uart_isr.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O location to P0.  ¼ûL188
+_hal_uart_isr.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O location to P1.   ¼û L189
+_hal_uart_isr_sbl.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\oadmanager\source):#undef HAL_UART_PERCFG_BIT
+_hal_uart_isr_sbl.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\oadmanager\source):#define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
+_hal_uart_isr_sbl.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\oadmanager\source):#define HAL_UART_PERCFG_BIT        0x02         // USART1 on P1, Alt-2; so set this bit.
+_hal_uart_isr_sbl.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\oadmanager\source):  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O location to P0.
+_hal_uart_isr_sbl.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\oadmanager\source):  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O location to P1.
+_hal_uart_spi.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#undef  HAL_UART_PERCFG_BIT
+_hal_uart_spi.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x01         /* USART0 on P0, Alt-1; so clear this bit */
+_hal_uart_spi.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):#define HAL_UART_PERCFG_BIT        0x02         /* USART1 on P1, Alt-2; so set this bit */
+_hal_uart_spi.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG &= ~HAL_UART_PERCFG_BIT;    /* Set UART0 I/O to Alt. 1 location on P0 */
+_hal_uart_spi.c (c:\texas instruments\ble-cc254x-1.4.2.2\components\hal\target\cc2540eb):  PERCFG |= HAL_UART_PERCFG_BIT;     /* Set UART1 I/O to Alt. 2 location on P1 */
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\ebl\app\cc254x):#undef  HAL_UART_PERCFG_BIT
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\ebl\app\cc254x):#define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\ebl\app\cc254x):#define HAL_UART_PERCFG_BIT        0x02         // USART1 on P1, Alt-2; so set this bit.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\ebl\app\cc254x):  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O to Alt. 1 location on P0.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\ebl\app\cc254x):  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O to Alt. 2 location on P1.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\sbl\app\cc254x):#undef  HAL_UART_PERCFG_BIT
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\sbl\app\cc254x):#define HAL_UART_PERCFG_BIT        0x01         // USART0 on P0, Alt-1; so clear this bit.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\sbl\app\cc254x):#define HAL_UART_PERCFG_BIT        0x02         // USART1 on P1, Alt-2; so set this bit.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\sbl\app\cc254x):  PERCFG &= ~HAL_UART_PERCFG_BIT;    // Set UART0 I/O to Alt. 1 location on P0.
+_sbl_uart.c (c:\texas instruments\ble-cc254x-1.4.2.2\projects\ble\util\sbl\app\cc254x):  PERCFG |= HAL_UART_PERCFG_BIT;     // Set UART1 I/O to Alt. 2 location on P1.

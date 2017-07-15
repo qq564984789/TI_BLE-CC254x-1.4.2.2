@@ -80,34 +80,34 @@
 int main(void)
 {
   /* Initialize hardware */
-  HAL_BOARD_INIT();
+  HAL_BOARD_INIT();      //初始化时钟，稳定时钟
 
   // Initialize board I/O
-  InitBoard( OB_COLD );
+  InitBoard( OB_COLD );    //冷启动，关闭led与中断，使接下来的各种初始化不受干扰
 
   /* Initialze the HAL driver */
-  HalDriverInit();
+  HalDriverInit();     //各种驱动的初始化:按键、lcd、adc、usb、  uart等
 
   /* Initialize NV system */
-  osal_snv_init();
+  osal_snv_init();  //snv用于保存配对数据或用户自定义数据的一小段flash，4K空间
   
   /* Initialize LL */
 
   /* Initialize the operating system */
-  osal_init_system();
+  osal_init_system();                                    //里面有用户app任务的初始化接口
 
   /* Enable interrupts */
-  HAL_ENABLE_INTERRUPTS();
+  HAL_ENABLE_INTERRUPTS();   //开启全局中断
 
   // Final board initialization
-  InitBoard( OB_READY );
+  InitBoard( OB_READY );                //设置标志:系统初始化完毕
 
-  #if defined ( POWER_SAVING )
+  #if defined ( POWER_SAVING )      //如果使能了低功耗，则启动低功耗模式
     osal_pwrmgr_device( PWRMGR_BATTERY );
   #endif
     
   /* Start OSAL */
-  osal_start_system(); // No Return from here
+  osal_start_system(); // No Return from here    osal 操作系统启动函数，实际上是一个大循环，只是检查相对应的标志位，就指定相对应的任务。
 
   return 0;
 }
