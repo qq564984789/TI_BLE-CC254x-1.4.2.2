@@ -90,10 +90,13 @@ typedef struct
 #define TIMER_DECR_TIME    1  // 1ms - has to be matched with TC_OCC
 #define RETUNE_THRESHOLD   1  // Threshold for power saving algorithm
 
+//注意： 这个系统节拍定时器的参数是不可以修改的，
+//这里只是提供头文件给我们了解一下
+//而已， 库文件里已经写死了的，我们不能修改了。
 /* OSAL timer defines */
-#define TICK_TIME   1000   /* Timer per tick - in micro-sec */
+#define TICK_TIME   1000   /* Timer per tick - in micro-sec */  //节拍间隔时间:1000 US = 1ms
 #define TICK_COUNT  1
-#define OSAL_TIMER  HAL_TIMER_3
+#define OSAL_TIMER  HAL_TIMER_3     //  osal 的系统节拍定时器
 
 #ifndef _WIN32
 extern void _itoa(uint16 num, uint8 *buf, uint8 radix);

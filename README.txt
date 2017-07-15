@@ -8,6 +8,10 @@ main
 
 SYS_EVENT_MSG
 
+TICK_COUNT
+
+
+
 
 Texas Instruments, Inc.
 

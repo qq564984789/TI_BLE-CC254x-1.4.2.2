@@ -85,23 +85,24 @@ extern "C"
    */
   extern void osalTimerInit( void );
 
-  /*
-   * Set a Timer
-   */
+  /*                                              timeout_value  :定时器的定时时长,单位是ms
+   * Set a Timer    启动定时器，timeout_value 时间到了之后，产生一次event
+   */    
   extern uint8 osal_start_timerEx( uint8 task_id, uint16 event_id, uint32 timeout_value );
   
   /*
-   * Set a timer that reloads itself.
+   * Set a timer that reloads itself.   启动定时器， 自动重装:timeout_valued时间到了之后，定时产生event
    */
   extern uint8 osal_start_reload_timer( uint8 taskID, uint16 event_id, uint32 timeout_value );
 
   /*
-   * Stop a Timer
+   * Stop a Timer   停止定时器
    */
   extern uint8 osal_stop_timerEx( uint8 task_id, uint16 event_id );
 
   /*
-   * Get the tick count of a Timer.
+   * Get the tick count of a Timer.   返回系统时钟 （一般用于对比现在与历史的时间， 后面我们的 AT 命令就用到这个
+来辅助了）
    */
   extern uint32 osal_get_timeoutEx( uint8 task_id, uint16 event_id );
 
