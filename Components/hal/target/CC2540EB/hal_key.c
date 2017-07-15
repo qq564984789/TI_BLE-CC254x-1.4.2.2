@@ -147,7 +147,7 @@
 
 /* edge interrupt */
 #define HAL_KEY_SW_6_EDGEBIT  BV(0)
-#define HAL_KEY_SW_6_EDGE     HAL_KEY_FALLING_EDGE
+#define HAL_KEY_SW_6_EDGE     HAL_KEY_FALLING_EDGE     //设置边沿中断类型: 上升沿，下降沿
 
 /* SW_6 interrupts */
 #define HAL_KEY_SW_6_IEN      IEN1  /* CPU interrupt mask register */
@@ -273,7 +273,7 @@ void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
 
 #else
     /* Rising/Falling edge configuratinn */
-    PICTL &= ~(HAL_KEY_SW_6_EDGEBIT);    /* Clear the edge bit */
+    PICTL &= ~(HAL_KEY_SW_6_EDGEBIT);    /* Clear the edge bit */  //默认上升沿触发中断
     /* For falling edge, the bit must be set. */
   #if (HAL_KEY_SW_6_EDGE == HAL_KEY_FALLING_EDGE)
     PICTL |= HAL_KEY_SW_6_EDGEBIT;

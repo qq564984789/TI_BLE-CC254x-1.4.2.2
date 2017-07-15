@@ -76,9 +76,9 @@ extern "C"
 /* Modes */
 #define HAL_LED_MODE_OFF     0x00
 #define HAL_LED_MODE_ON      0x01
-#define HAL_LED_MODE_BLINK   0x02
-#define HAL_LED_MODE_FLASH   0x04
-#define HAL_LED_MODE_TOGGLE  0x08
+#define HAL_LED_MODE_BLINK   0x02    //灯闪一次
+#define HAL_LED_MODE_FLASH   0x04   //灯连续闪烁，1s 一次
+#define HAL_LED_MODE_TOGGLE  0x08 //灯的输出取反
 
 /* Defaults */
 #define HAL_LED_DEFAULT_MAX_LEDS      4
@@ -106,8 +106,9 @@ extern void HalLedInit( void );
 extern uint8 HalLedSet( uint8 led, uint8 mode );
 
 /*
- * Blink the LED.
- */
+ * Blink the LED.   cnt:闪烁次数    duty: 占空比     time  :周期(ms  )
+ */ 
+ //例如  HalLedBlink(HAL_LED_1, 100, 50, 1000);      led1 输出 1hz 的方波，表现为 led1 1 秒亮灭一次
 extern void HalLedBlink( uint8 leds, uint8 cnt, uint8 duty, uint16 time );
 
 /*

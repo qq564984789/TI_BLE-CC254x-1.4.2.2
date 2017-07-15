@@ -108,17 +108,17 @@ extern void HalLcdInit(void);
 extern void HalLcdWriteString ( char *str, uint8 option);
 
 /*
- * Write a value to the LCD
+ * Write a value to the LCD    在某一行仅显示数字
  */
 extern void HalLcdWriteValue ( uint32 value, const uint8 radix, uint8 option);
 
 /*
- * Write a value to the LCD
+ * Write a value to the LCD  在第一行、第二行分别 显示line1、line2字符串
  */
 extern void HalLcdWriteScreen( char *line1, char *line2 );
 
 /*
- * Write a string followed by a value to the LCD
+ * Write a string followed by a value to the LCD   在某一行显示  字符串+ 数字
  */
 extern void HalLcdWriteStringValue( char *title, uint16 value, uint8 format, uint8 line );
 

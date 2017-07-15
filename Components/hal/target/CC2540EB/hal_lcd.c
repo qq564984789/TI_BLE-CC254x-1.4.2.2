@@ -70,8 +70,8 @@
   P1.2 - LCD_CS
 
   //spi
-  P1.5 - CLK
-  P1.6 - MOSI
+  P1.5 - CLK  /D0   Ê±ÖÓ
+  P1.6 - MOSI  /D1  Êý¾Ý
   P1.7 - MISO
 */
 
