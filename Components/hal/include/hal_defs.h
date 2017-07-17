@@ -144,8 +144,13 @@
  *  constant-controlling-loop type of warning on most compilers.)
  */
 #define st(x)      do { x } while (__LINE__ == -1)
-
-
+//__LINE__ 是一个宏，表示当前代码在源文件的行号，它是大于
+// 0的，因此，上述语句等同于#define st(x)      do { x } while (0)
+//  do {  } while (0)  通常用于宏中，为的是避免如下情况:
+//  假设我们宏定义成这样 #define st(x)   x  ，那么我们在调用
+// if (0)  st( a = b; b = c;);时会被解释为  if (0)   a = b; b = c;  这样，  if (0)
+//就只对a = b起作用了
+ 
 /**************************************************************************************************
  */
 #endif

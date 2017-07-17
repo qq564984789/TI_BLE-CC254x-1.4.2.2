@@ -1653,7 +1653,7 @@ void osal_run_system( void )
 #endif /* USE_ICALL */
 
   do {                           //不断循环查找某任务是否有事件发生，若有事件，立刻退出do。。。while循环。app应用优先级最低
-    if (tasksEvents[idx])  // Task is highest priority that is ready.
+    if (tasksEvents[idx])  // Task is highest priority that is ready.      tasksEvents[idx] 是一个指针数组
     {
       break;
     }
@@ -1669,9 +1669,9 @@ void osal_run_system( void )
     tasksEvents[idx] = 0;  // Clear the Events for this task.   清除事件记录，在执行任务处理函数期间有可能会有事件再次发生
     HAL_EXIT_CRITICAL_SECTION(intState);   //开中断，恢复先前中断状态
 
-    activeTaskID = idx;
+    activeTaskID = idx;                             // (tasksArr[idx])( idx, events );   这是任务idx的事件处理函数
     events = (tasksArr[idx])( idx, events );   //tasksArr是任务的处理函数指针，调用相应的任务事件处理函数
-                                                             //返回的是这个任务未被处理的事件
+                                                             //注意: 每一个任务事件处理函数返回的是这个任务未被处理的事件
     activeTaskID = TASK_NO_TASK;
 
     HAL_ENTER_CRITICAL_SECTION(intState);

@@ -79,7 +79,7 @@
  */
 //tasksArr 是存放任务处理函数地址的数组
 // The order in this table must be identical to the task initialization calls below in osalInitTask.
-const pTaskEventHandlerFn tasksArr[] =
+const pTaskEventHandlerFn tasksArr[] =                       //pTaskEventHandlerFn是什么数据类型? 函数指针!
 {
   LL_ProcessEvent,                                                  // task 0
   Hal_ProcessEvent,                                                 // task 1

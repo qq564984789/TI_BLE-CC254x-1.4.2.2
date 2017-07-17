@@ -298,8 +298,8 @@ uint16 SimpleBLEBroadcaster_ProcessEvent( uint8 task_id, uint16 events )
   
   VOID task_id; // OSAL required parameter that isn't used in this function
   
-  if ( events & SYS_EVENT_MSG )
-  {
+  if ( events & SYS_EVENT_MSG )          //大事件:系统消息，下面会对从属于这个大事件
+  {                                                     //的小事件再进行判断
     uint8 *pMsg;
 
     if ( (pMsg = osal_msg_receive( simpleBLEBroadcaster_TaskID )) != NULL )
@@ -314,8 +314,8 @@ uint16 SimpleBLEBroadcaster_ProcessEvent( uint8 task_id, uint16 events )
     return (events ^ SYS_EVENT_MSG);
   }
 
-  if ( events & SBP_START_DEVICE_EVT )
-  {
+  if ( events & SBP_START_DEVICE_EVT )   //大事件:  启动设备完成，下面会对从属于这个大事件
+  {                                                          // //的小事件再进行判断
     // Start the Device
     VOID GAPRole_StartDevice( &simpleBLEBroadcaster_BroadcasterCBs );
     

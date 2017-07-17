@@ -75,8 +75,8 @@ extern "C"
  */
 
 /*
- * Event handler function prototype
- */
+ * Event handler function prototype    pTaskEventHandlerFn是一个函数指针类型的别名
+ */     //这个指针指向 unsigned short   M( unsigned char task_id, unsigned short event )这种类型的函数
 typedef unsigned short (*pTaskEventHandlerFn)( unsigned char task_id, unsigned short event );
 
 /*********************************************************************
