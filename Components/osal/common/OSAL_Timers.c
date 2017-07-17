@@ -128,7 +128,7 @@ void osalTimerInit( void )
 }
 
 /*********************************************************************
- * @fn      osalAddTimer
+ * @fn      osalAddTimer    向链表里添加一个"定时任务"
  *
  * @brief   Add a timer to the timer list.
  *          Ints must be disabled.
@@ -418,7 +418,7 @@ uint8 osal_timer_num_active( void )
  *
  * @return  none
  *********************************************************************/
-void osalTimerUpdate( uint32 updateTime )
+void osalTimerUpdate( uint32 updateTime )   //每隔1  ms被调用一次
 {
   halIntState_t intState;
   osalTimerRec_t *srchTimer;
@@ -440,7 +440,7 @@ void osalTimerUpdate( uint32 updateTime )
     prevTimer = (void *)NULL;
 
     // Look for open timer slot
-    while ( srchTimer )
+    while ( srchTimer )     //对  osal_start_timerEx设置的"软件定时器"减计数
     {
       osalTimerRec_t *freeTimer = NULL;
 
@@ -485,9 +485,9 @@ void osalTimerUpdate( uint32 updateTime )
       if ( (srchTimer->timeout.time16[0] == 0) && (srchTimer->timeout.time16[1] == 0) &&
            (srchTimer->reloadTimeout) && (srchTimer->event_flag) )
       {
-        // Notify the task of a timeout
-        osal_set_event( srchTimer->task_id, srchTimer->event_flag );
-
+        // Notify the task of a timeout  
+        //如果某个地方设置了一个软件定时器(osal_start_timerEx),当这个定时时间到达后，就会设置这个事件
+        osal_set_event( srchTimer->task_id, srchTimer->event_flag );   
         // Reload the timer timeout value
         srchTimer->timeout.time32 = srchTimer->reloadTimeout;
       }

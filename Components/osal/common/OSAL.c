@@ -742,7 +742,7 @@ static uint8 osal_msg_enqueue_push( uint8 destination_task, uint8 *msg_ptr, uint
     return ( INVALID_MSG_POINTER );
   }
 
-  OSAL_MSG_ID( msg_ptr ) = destination_task;
+  OSAL_MSG_ID( msg_ptr ) = destination_task;   //设置消息数据是属于哪个任务的
 
   if ( push == TRUE )
   {
@@ -752,10 +752,10 @@ static uint8 osal_msg_enqueue_push( uint8 destination_task, uint8 *msg_ptr, uint
   else
   {
     // append the message
-    osal_msg_enqueue( &osal_qHead, msg_ptr );
+    osal_msg_enqueue( &osal_qHead, msg_ptr );  //将要发送的消息数据插入到以osal_qHead开头的数据链表中
   }
 
-  // Signal the task that a message is waiting
+  // Signal the task that a message is waiting   通知主循环，有任务事件等待处理
   osal_set_event( destination_task, SYS_EVENT_MSG );
 
   return ( SUCCESS );
@@ -1572,9 +1572,8 @@ void osal_run_system( void )
   uint32 next_timeout_prior = osal_next_timeout();
 #else /* USE_ICALL */
 #ifndef HAL_BOARD_CC2538
-  osalTimeUpdate();         //更新定时器
-#endif
-
+  osalTimeUpdate();         //更新定时器(ms级心跳计数),这里的"节拍"不单独使用一个定时器产生
+#endif                             //而是使用的每320us中断一次的MAC定时器，这样就将三个定时器空出来供用户使用
   Hal_ProcessPoll();       //查询硬件 UART  、SPI   、  HID  的数据
 #endif /* USE_ICALL */
 
@@ -1654,8 +1653,8 @@ void osal_run_system( void )
 #endif /* USE_ICALL */
 
   do {                           //循环查看事件表是否有事件发生(每个二进制位表示一个事件)，若有事件，立刻退出do。。。while循环。app应用优先级最低
-    if (tasksEvents[idx])  // Task is highest priority that is ready.      tasksEvents[idx] 是一个指针数组
-    {
+    if (tasksEvents[idx])  // Task is highest priority that is ready.      tasksEvents[idx] 是一个指针数组,存放了一个任务是否该被运行的序列，那么这个序列是如何产生的呢 ?
+    {                                //答案，均是通过 osal_set_event()函数
       break;
     }
   } while (++idx < tasksCnt);       //tasksEvents[6]通常已经是用户自己定义的任务事件

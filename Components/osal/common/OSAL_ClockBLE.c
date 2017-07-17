@@ -113,7 +113,7 @@ static void osalClockUpdate( uint16 elapsedMSec );
 
 /*********************************************************************
  * @fn      osalTimeUpdate
- *
+ * MAC定时器每320us中断一次
  * @brief   Uses the free running rollover count of the MAC backoff timer;
  *          this timer runs freely with a constant 320 usec interval.  The
  *          count of 320-usec ticks is converted to msecs and used to update
@@ -130,7 +130,7 @@ void osalTimeUpdate( void )
   uint16 tmp;
   uint16 ticks625us;
   uint16 elapsedMSec = 0;
-
+  //获取MAC定时器的计数值，时间以625us为单位
   // Get the free-running count of 625us timer ticks
   tmp = ll_McuPrecisionCount();
 
@@ -148,8 +148,8 @@ void osalTimeUpdate( void )
     while ( ticks625us > MAXCALCTICKS )
     {
       ticks625us -= MAXCALCTICKS;
-      elapsedMSec += MAXCALCTICKS * 5 / 8;
-      remUsTicks += MAXCALCTICKS * 5 % 8;
+      elapsedMSec += MAXCALCTICKS * 5 / 8;      //以ms为单位
+      remUsTicks += MAXCALCTICKS * 5 % 8;     //remUsTicks是上次的余数
     }
 
     // update converted number with remaining ticks from loop and the
@@ -161,8 +161,8 @@ void osalTimeUpdate( void )
     remUsTicks = tmp % 8;
 
     // Update OSAL Clock and Timers
-    if ( elapsedMSec )
-    {
+    if ( elapsedMSec )   //如果上次到这次的时间不为零(至少1ms),则更新时钟及软件定时器
+    {  //换句话说，只要两次主循环(osal_run_system)的时间间隔大于1ms,则下面两个函数就会被调用，这样它就为应用程序提供了一个ms定时器
       osalClockUpdate( elapsedMSec );
       osalTimerUpdate( elapsedMSec );
     }

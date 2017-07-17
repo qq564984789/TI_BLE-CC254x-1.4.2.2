@@ -434,9 +434,9 @@ void HalKeyPoll (void)
   halKeySavedKeys = keys;
 
   /* Invoke Callback if new keys were depressed */
-  if (notify && (pHalKeyProcessFunction))
+  if (notify && (pHalKeyProcessFunction))       //调用按键服务程序(回调函数)
   {
-    (pHalKeyProcessFunction) (keys, HAL_KEY_STATE_NORMAL);
+    (pHalKeyProcessFunction) (keys, HAL_KEY_STATE_NORMAL);   //调用OnBoard_KeyCallback函数
 
   }
 }

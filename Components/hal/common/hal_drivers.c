@@ -170,11 +170,11 @@ void HalDriverInit (void)
 }
 
 /**************************************************************************************************
- * @fn      Hal_ProcessEvent
+ * @fn      Hal_ProcessEvent           HAL任务的事件处理函数
  *
  * @brief   Hal Process Event
  *
- * @param   task_id - Hal TaskId
+ * @param   task_id - Hal TaskId   HAL任务的任务号
  *          events - events
  *
  * @return  None
@@ -229,7 +229,7 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
   {
 #if (defined HAL_KEY) && (HAL_KEY == TRUE)
     /* Check for keys */
-    HalKeyPoll();
+    HalKeyPoll();          //按键的处理函数
 
     /* if interrupt disabled, do next polling */
     if (!Hal_KeyIntEnable)
