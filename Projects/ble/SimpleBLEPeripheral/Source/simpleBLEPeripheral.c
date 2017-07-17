@@ -465,40 +465,45 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
       VOID osal_msg_deallocate( pMsg );
     }
 
-    // return unprocessed events
+    // return unprocessed events     返回未处理的任务标志
     return (events ^ SYS_EVENT_MSG);
   }
 
   if ( events & SBP_START_DEVICE_EVT )
   {
     // Start the Device
+     /*启动设备,括号内为回调函数,来设置要显示的信息或操作*/
     VOID GAPRole_StartDevice( &simpleBLEPeripheral_PeripheralCBs );
 
     // Start Bond Manager
+     /*设置定时时间,到时后周期事件的任务id被置起*/
     VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
 
     // Set timer for first periodic event
+     /*设置定时时间,到时后周期事件的任务id被置起*/
     osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
 
     return ( events ^ SBP_START_DEVICE_EVT );
   }
 
-  if ( events & SBP_PERIODIC_EVT )
+  if ( events & SBP_PERIODIC_EVT )   /*检查是否有周期任务事件*/
   {
     // Restart timer
+      /*如果有周期任务事件*/
     if ( SBP_PERIODIC_EVT_PERIOD )
     {
+    /*设置定时时间*/
       osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
     }
 
-    // Perform periodic application task
+    // Perform periodic application task   /*处理周期事件中要做的工作*/
     performPeriodicTask();
 
     return (events ^ SBP_PERIODIC_EVT);
   }
 
   // Discard unknown events
-  return 0;
+  return 0;    //未知的任务事件，清零
 }
 
 /*********************************************************************

@@ -203,7 +203,7 @@ static gapRolesCBs_t simpleBLEBroadcaster_BroadcasterCBs =
  */
 void SimpleBLEBroadcaster_Init( uint8 task_id )
 {
-  simpleBLEBroadcaster_TaskID = task_id;
+  simpleBLEBroadcaster_TaskID = task_id;   //osalInitTasks()分配的id .需要用户任务自定义一个全局变量来保存
 
   // Setup the GAP Broadcaster Role Profile
   {
@@ -301,7 +301,7 @@ uint16 SimpleBLEBroadcaster_ProcessEvent( uint8 task_id, uint16 events )
   if ( events & SYS_EVENT_MSG )          //大事件:系统消息，下面会对从属于这个大事件
   {                                                     //的小事件再进行判断
     uint8 *pMsg;
-
+     /*检查是否从消息队列中收到数据*/
     if ( (pMsg = osal_msg_receive( simpleBLEBroadcaster_TaskID )) != NULL )
     {
       simpleBLEBroadcaster_ProcessOSALMsg( (osal_event_hdr_t *)pMsg );

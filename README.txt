@@ -3,15 +3,15 @@ osal_init_system
 sys_event_msg
 
 osal_set_event
-
+halkeypoll
 main
-
+registerforkeys
 SYS_EVENT_MSG
 
 TICK_COUNT
-
-
-
+osal_msg_deallocate
+sprintf
+GAPRole_StartDevice
 
 Texas Instruments, Inc.
 

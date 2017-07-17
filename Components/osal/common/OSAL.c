@@ -1550,8 +1550,9 @@ ICall_Errno osal_service_entry(ICall_FuncArgsHdr *args)
 /*********************************************************************
  * @fn      osal_run_system   
  *
- * @brief
- *
+ * @brief   osal是一种基于事件驱动 的轮询式操作系统
+ *     tasksEvents[idx]是一个事件表，taskArr [idx]是一个事件处理函数表
+ *    轮询事件表，若有事件发生，则跳到函数表中对应的事件处理函数执行
  *   This function will make one pass through the OSAL taskEvents table
  *   and call the task_event_processor() function for the first task that
  *   is found with at least one event pending. If there are no pending
@@ -1565,16 +1566,16 @@ ICall_Errno osal_service_entry(ICall_FuncArgsHdr *args)
 //检查相对应的标志位，就指定相对应的任务。
 void osal_run_system( void )
 {
-  uint8 idx = 0;
+  uint8 idx = 0;      //事件表的索引
 
 #ifdef USE_ICALL
   uint32 next_timeout_prior = osal_next_timeout();
 #else /* USE_ICALL */
 #ifndef HAL_BOARD_CC2538
-  osalTimeUpdate();
+  osalTimeUpdate();         //更新定时器
 #endif
 
-  Hal_ProcessPoll();       //查询 UART  、SPI   、  HID  的数据
+  Hal_ProcessPoll();       //查询硬件 UART  、SPI   、  HID  的数据
 #endif /* USE_ICALL */
 
 #ifdef USE_ICALL
@@ -1652,7 +1653,7 @@ void osal_run_system( void )
   }
 #endif /* USE_ICALL */
 
-  do {                           //不断循环查找某任务是否有事件发生，若有事件，立刻退出do。。。while循环。app应用优先级最低
+  do {                           //循环查看事件表是否有事件发生(每个二进制位表示一个事件)，若有事件，立刻退出do。。。while循环。app应用优先级最低
     if (tasksEvents[idx])  // Task is highest priority that is ready.      tasksEvents[idx] 是一个指针数组
     {
       break;

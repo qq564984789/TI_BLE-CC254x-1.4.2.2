@@ -158,7 +158,7 @@ extern void (*osal_eventloop_hook)(void);
   extern uint8 osal_msg_deallocate( uint8 *msg_ptr );
 
   /*
-   * Send a Task Message
+   * Send a Task Message   任务发送消息到消息队列
    */
   extern uint8 osal_msg_send( uint8 destination_task, uint8 *msg_ptr );
 
@@ -168,7 +168,7 @@ extern void (*osal_eventloop_hook)(void);
   extern uint8 osal_msg_push_front( uint8 destination_task, uint8 *msg_ptr );
 
   /*
-   * Receive a Task Message
+   * Receive a Task Message   /* 任务从消息队列中读取属于自已的消息 */
    */
   extern uint8 *osal_msg_receive( uint8 task_id );
 
