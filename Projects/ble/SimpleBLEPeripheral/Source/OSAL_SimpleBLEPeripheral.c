@@ -130,7 +130,7 @@ void osalInitTasks( void )
 
   tasksEvents = (uint16 *)osal_mem_alloc( sizeof( uint16 ) * tasksCnt);
   osal_memset( tasksEvents, 0, (sizeof( uint16 ) * tasksCnt));
-
+  //  sizeof( uint16 )是2个字节，即一个任务状态的长度。所有任务的状态都被初始化为0。代表了当前任务没有需要响应的事件。
   /* LL Task */
   LL_Init( taskID++ );
 

@@ -13,10 +13,12 @@ osal_msg_deallocate
 sprintf
 GAPRole_StartDevice
 
+HAL_KEY_SW_2
 
 
+Hal_ProcessEvent
 
-
+osal_msg_send
 
 
 

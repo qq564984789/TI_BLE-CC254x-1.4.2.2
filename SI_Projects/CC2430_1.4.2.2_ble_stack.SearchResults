@@ -1,0 +1,17 @@
+---- HalKeyConfig Matches (16 in 7 files) ----
+Hal_key.c (components\hal\target\cc2540eb): * @fn      HalKeyConfig
+Hal_key.c (components\hal\target\cc2540eb):void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
+Hal_key.c (components\hal\target\cc2540eb):void HalKeyConfig(bool interruptEnable, halKeyCBack_t cback){}
+Hal_key.c (components\hal\target\cc2540usb): * @fn          HalKeyConfig
+Hal_key.c (components\hal\target\cc2540usb):void HalKeyConfig(bool interruptEnable, halKeyCBack_t cback)
+Hal_key.c (components\hal\target\cc2540usb):void HalKeyConfig(bool interruptEnable, halKeyCBack_t cback){}
+Hal_key.c (components\hal\target\cc2541arc): * @fn      HalKeyConfig
+Hal_key.c (components\hal\target\cc2541arc):void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
+Hal_key.h (components\hal\include):extern void HalKeyConfig( bool interruptEnable, const halKeyCBack_t cback);
+Hal_keys.c (components\hal\target\cc2541st):* @fn      HalKeyConfig
+Hal_keys.c (components\hal\target\cc2541st):void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
+Hal_keys.c (components\hal\target\cc2541st):void HalKeyConfig(bool interruptEnable, halKeyCBack_t cback){}
+Hal_keys.h (components\hal\target\cc2541st):extern void HalKeyConfig( bool interruptEnable, const halKeyCBack_t cback);
+OnBoard.c (projects\ble\common\cc2540):    HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
+OnBoard.c (projects\ble\common\cc2540):      HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
+OnBoard.c (projects\ble\common\cc2540):      HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
