@@ -45,7 +45,16 @@
  Release Name: ble_sdk_1.4.2.2
  Release Date: 2016-06-09 06:57:10
  *****************************************************************************/
+/*
+HAL_KEY_SW_2:改变设备的广播状态(打开、关闭)，我们的设备上电默认打开广播
 
+
+
+
+
+
+
+*/
 /*********************************************************************
  * INCLUDES
  */
@@ -287,7 +296,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   VOID GAP_SetParamValue( TGAP_CONN_PAUSE_PERIPHERAL, DEFAULT_CONN_PAUSE_PERIPHERAL );
   
   // Setup the GAP Peripheral Role Profile
-  {
+  {  //根据平台，设置是否使能广播.TI官方提供的 CC2540_MINIDK 板默认是不打开广播的
+     //CC2540_MINIDK 板是通过按键HAL_KEY_SW_2(在simpleBLEPeripheral_HandleKeys里)打开的。
     #if defined( CC2540_MINIDK )
       // For the CC2540DK-MINI keyfob, device doesn't start advertising until button is pressed
       uint8 initial_advertising_enable = FALSE;
@@ -571,26 +581,27 @@ static void simpleBLEPeripheral_HandleKeys( uint8 shift, uint8 keys )
     // Note:  If PLUS_BROADCASTER is define this condition is ignored and
     //        Device may advertise during connections as well. 
 #ifndef PLUS_BROADCASTER  
-    if( gapProfileState != GAPROLE_CONNECTED )
+    if( gapProfileState != GAPROLE_CONNECTED )  //未连接时
     {
 #endif // PLUS_BROADCASTER
-      uint8 current_adv_enabled_status;
+      uint8 current_adv_enabled_status;   //这两个变量始终相反
       uint8 new_adv_enabled_status;
 
-      //Find the current GAP advertisement status
+      //Find the current GAP advertisement status  
       GAPRole_GetParameter( GAPROLE_ADVERT_ENABLED, &current_adv_enabled_status );
-
-      if( current_adv_enabled_status == FALSE )
+	  //查看当前广播是否使能:填入参数GAPROLE_ADVERT_ENABLED,表示查询的是广播使能
+      if( current_adv_enabled_status == FALSE )  //未使能
       {
-        new_adv_enabled_status = TRUE;
+        new_adv_enabled_status = TRUE;         //开启
       }
-      else
+      else                                      //使能
       {
-        new_adv_enabled_status = FALSE;
+        new_adv_enabled_status = FALSE;        //关闭
       }
 
       //change the GAP advertisement status to opposite of current status
       GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &new_adv_enabled_status );
+	  //翻转、切换设备的广播状态
 #ifndef PLUS_BROADCASTER
     }
 #endif // PLUS_BROADCASTER

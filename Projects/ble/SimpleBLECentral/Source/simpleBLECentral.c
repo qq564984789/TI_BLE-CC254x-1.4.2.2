@@ -409,7 +409,8 @@ static void simpleBLECentral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
  * @param   keys - bit field for key events. Valid entries:
  *                 HAL_KEY_SW_2
  *                 HAL_KEY_SW_1
- *
+ *          切换蓝牙的状态和功能，可以使用串口来替换按键!
+ *          Central:  手机，主要是扫描、连接工作
  * @return  none
  */
 uint8 gStatus;
@@ -417,10 +418,10 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
 {
   (void)shift;  // Intentionally unreferenced parameter
 
-  if ( keys & HAL_KEY_UP )
+  if ( keys & HAL_KEY_UP )   //向上按键
   {
-    // Start or stop discovery
-    if ( simpleBLEState != BLE_STATE_CONNECTED )
+    // Start or stop discovery   开始或停止设备发现，即scanning
+    if ( simpleBLEState != BLE_STATE_CONNECTED )  //如果未连接
     {
       if ( !simpleBLEScanning )
       {
@@ -429,16 +430,16 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
         
         LCD_WRITE_STRING( "Discovering...", HAL_LCD_LINE_1 );
         LCD_WRITE_STRING( "", HAL_LCD_LINE_2 );
-        
+        //使能扫描
         GAPCentralRole_StartDiscovery( DEFAULT_DISCOVERY_MODE,
                                        DEFAULT_DISCOVERY_ACTIVE_SCAN,
                                        DEFAULT_DISCOVERY_WHITE_LIST );      
       }
       else
       {
-        GAPCentralRole_CancelDiscovery();
+        GAPCentralRole_CancelDiscovery();  //停止扫描
       }
-    }
+    }  //如果已经连接 ，则读取或写特征值
     else if ( simpleBLEState == BLE_STATE_CONNECTED &&
               simpleBLECharHdl != 0 &&
               simpleBLEProcedureInProgress == FALSE )
@@ -487,9 +488,10 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
     }    
   }
 
-  if ( keys & HAL_KEY_LEFT )
+  if ( keys & HAL_KEY_LEFT )   //向左按键
   {
-    // Display discovery results
+    // Display discovery results   显示扫描到的设备，在设备中滚动
+    //扫描到的设备地址存放于simpleBLEDevList数组中
     if ( !simpleBLEScanning && simpleBLEScanRes > 0 )
     {
         // Increment index of current result (with wraparound)
@@ -506,9 +508,9 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
     }
   }
 
-  if ( keys & HAL_KEY_RIGHT )
+  if ( keys & HAL_KEY_RIGHT )  //向右按键
   {
-    // Connection update
+    // Connection update  连接更新
     if ( simpleBLEState == BLE_STATE_CONNECTED )
     {
       GAPCentralRole_UpdateLink( simpleBLEConnHandle,
@@ -518,19 +520,19 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
                                  DEFAULT_UPDATE_CONN_TIMEOUT );
     }
   }
-  
+  //中间按键:建立 或断开当前连接
   if ( keys & HAL_KEY_CENTER )
   {
     uint8 addrType;
     uint8 *peerAddr;
     
     // Connect or disconnect
-    if ( simpleBLEState == BLE_STATE_IDLE )
+    if ( simpleBLEState == BLE_STATE_IDLE )  //连接
     {
       // if there is a scan result
       if ( simpleBLEScanRes > 0 )
       {
-        // connect to current device in scan result
+        // connect to current device in scan result   从扫描到的设备中选择设备地址
         peerAddr = simpleBLEDevList[simpleBLEScanIdx].addr;
         addrType = simpleBLEDevList[simpleBLEScanIdx].addrType;
       
@@ -543,7 +545,7 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
         LCD_WRITE_STRING( "Connecting", HAL_LCD_LINE_1 );
         LCD_WRITE_STRING( bdAddr2Str( peerAddr ), HAL_LCD_LINE_2 ); 
       }
-    }
+    }                                        //断开连接
     else if ( simpleBLEState == BLE_STATE_CONNECTING ||
               simpleBLEState == BLE_STATE_CONNECTED )
     {
@@ -556,9 +558,10 @@ static void simpleBLECentral_HandleKeys( uint8 shift, uint8 keys )
     }
   }
   
-  if ( keys & HAL_KEY_DOWN )
+  if ( keys & HAL_KEY_DOWN )  //向下按键，启动或关闭
   {
-    // Start or cancel RSSI polling
+    // Start or cancel RSSI polling  启动或终止RSSI的周期读取，注意这是在连接状态下!
+    // 当然，在扫描过程中也可以获得设备的RSSI值，只是调用的API不同
     if ( simpleBLEState == BLE_STATE_CONNECTED )
     {
       if ( !simpleBLERssi )
@@ -676,22 +679,23 @@ static uint8 simpleBLECentralEventCB( gapCentralRoleEvent_t *pEvent )
       }
       break;
 
-    case GAP_DEVICE_INFO_EVENT:
-      {
+    case GAP_DEVICE_INFO_EVENT:       //扫描过程中执行
+      { //GAP_DEVICE_INFO_EVENT:   告知主机接收到从机的Adv Data或者Scan Response消息包
         // if filtering device discovery results based on service UUID
         if ( DEFAULT_DEV_DISC_BY_SVC_UUID == TRUE )
         {
           if ( simpleBLEFindSvcUuid( SIMPLEPROFILE_SERV_UUID,
                                      pEvent->deviceInfo.pEvtData,
                                      pEvent->deviceInfo.dataLen ) )
-          {
+          {  //deviceInfo:这是一个重要的变量，该类型里面包含rssi值， 如读取从机的RSSI值:
+             //int8 rssiAver; int8 newRSSI = -(pEvent->deviceInfo.rssi);
             simpleBLEAddDeviceInfo( pEvent->deviceInfo.addr, pEvent->deviceInfo.addrType );
           }
         }
       }
       break;
       
-    case GAP_DEVICE_DISCOVERY_EVENT:
+    case GAP_DEVICE_DISCOVERY_EVENT:   //扫描完成后执行，设备发现事件
       {
         // discovery complete
         simpleBLEScanning = FALSE;
